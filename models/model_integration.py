@@ -195,7 +195,10 @@ class ModelIntegrator:
             class_names[i]: {
                 'mean': float(mean_probs[i]),
                 'std': float(std_probs[i]),
-                'ci_95': (float(mean_probs[i] - 1.96 * std_probs[i]), float(mean_probs[i] + 1.96 * std_probs[i]))
+                'ci_95': (
+                    float(np.clip(mean_probs[i] - 1.96 * std_probs[i], 0.0, 1.0)),
+                    float(np.clip(mean_probs[i] + 1.96 * std_probs[i], 0.0, 1.0))
+                )
             }
             for i in range(len(class_names))
         }
@@ -240,8 +243,14 @@ class ModelIntegrator:
         uncertainty_intervals = {
             'mean': float(mean_prob),
             'std': float(std_prob),
-            'ci_95': (float(mean_prob - 1.96 * std_prob), float(mean_prob + 1.96 * std_prob)),
-            'ci_90': (float(mean_prob - 1.645 * std_prob), float(mean_prob + 1.645 * std_prob))
+            'ci_95': (
+                float(np.clip(mean_prob - 1.96 * std_prob, 0.0, 1.0)),
+                float(np.clip(mean_prob + 1.96 * std_prob, 0.0, 1.0))
+            ),
+            'ci_90': (
+                float(np.clip(mean_prob - 1.645 * std_prob, 0.0, 1.0)),
+                float(np.clip(mean_prob + 1.645 * std_prob, 0.0, 1.0))
+            )
         }
         
         return float(mean_prob), uncertainty_intervals
@@ -294,7 +303,10 @@ class ModelIntegrator:
             class_names[i]: {
                 'mean': float(mean_probs[i]),
                 'std': float(std_probs[i]),
-                'ci_95': (float(mean_probs[i] - 1.96 * std_probs[i]), float(mean_probs[i] + 1.96 * std_probs[i]))
+                'ci_95': (
+                    float(np.clip(mean_probs[i] - 1.96 * std_probs[i], 0.0, 1.0)),
+                    float(np.clip(mean_probs[i] + 1.96 * std_probs[i], 0.0, 1.0))
+                )
             }
             for i in range(len(class_names))
         }

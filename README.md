@@ -284,6 +284,16 @@ The initial Vision Transformer model achieved:
 - `pca_visualization.png` - Patient clustering
 - Feature analysis reports
 
+### Explainability
+Generate a feature-based explanation for a saved patient prediction:
+```bash
+python explain_patient.py 1
+```
+This ranks the patient features that locally increase or decrease each model's selected output. It explains model sensitivity, not clinical causation.
+
+### Important Model Limitation
+Severity labels are derived from lesion-area thresholds, while recovery and recurrence labels are heuristic when real follow-up outcomes are unavailable. The reported metrics therefore measure performance against surrogate labels and should not be treated as clinical validation.
+
 ### Simulations
 - Treatment response simulations
 - Lesion evolution models

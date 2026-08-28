@@ -15,6 +15,14 @@ class ResultInterpreter:
         """Load digital twin file."""
         with open(digital_twin_path, 'r') as f:
             self.twin = json.load(f)
+
+    @staticmethod
+    def _probability_range(interval) -> str:
+        """Format a probability interval while keeping it within [0, 1]."""
+        lower, upper = interval if len(interval) == 2 else (0, 0)
+        lower = max(0.0, min(1.0, float(lower)))
+        upper = max(0.0, min(1.0, float(upper)))
+        return f"{lower * 100:.1f}% to {upper * 100:.1f}%"
     
     def interpret_severity(self) -> Dict:
         """Interpret severity prediction."""
@@ -55,7 +63,7 @@ class ResultInterpreter:
         return {
             'severity_level': class_name,
             'confidence_percent': f"{confidence * 100:.1f}%",
-            'confidence_range': f"{ci_95[0] * 100:.1f}% to {ci_95[1] * 100:.1f}%",
+            'confidence_range': self._probability_range(ci_95),
             'plain_explanation': interpretation['description'],
             'brain_impact': interpretation['impact'],
             'recovery_outlook': interpretation['recovery_outlook'],
@@ -91,7 +99,7 @@ class ResultInterpreter:
         
         return {
             'recovery_probability': f"{probability * 100:.1f}%",
-            'probability_range': f"{ci_95[0] * 100:.1f}% to {ci_95[1] * 100:.1f}%",
+            'probability_range': self._probability_range(ci_95),
             'recovery_level': recovery_level,
             'plain_explanation': explanation,
             'expected_timeline': timeline,
@@ -137,7 +145,7 @@ class ResultInterpreter:
         return {
             'recurrence_risk': class_name,
             'confidence_percent': f"{confidence * 100:.1f}%",
-            'confidence_range': f"{ci_95[0] * 100:.1f}% to {ci_95[1] * 100:.1f}%",
+            'confidence_range': self._probability_range(ci_95),
             'plain_explanation': interpretation['description'],
             'likelihood': interpretation['likelihood'],
             'prevention_measures': interpretation['prevention'],

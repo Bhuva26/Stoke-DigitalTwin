@@ -133,7 +133,12 @@ class DigitalTwin:
             data = json.load(f)
         
         # Reconstruct objects
-        profile = PatientProfile(**data['profile'])
+        profile_data = data.get('profile', {})
+        profile_fields = set(PatientProfile.__dataclass_fields__)
+        profile = PatientProfile(**{
+            key: value for key, value in profile_data.items()
+            if key in profile_fields
+        })
         imaging_features = ImagingFeatures(**data['imaging_features']) if data['imaging_features'] else None
         
         twin = cls(
@@ -142,9 +147,11 @@ class DigitalTwin:
             imaging_features=imaging_features
         )
         
-        twin.predictions = data['predictions']
-        twin.explanations = data['explanations']
-        twin.simulation_history = data['simulation_history']
+        twin.predictions = data.get('predictions') or data.get('model_predictions', {})
+        twin.explanations = data.get('explanations', {})
+        twin.segmentation_results = data.get('segmentation_results', {})
+        twin.lesion_features = data.get('lesion_features', {})
+        twin.simulation_history = data.get('simulation_history', [])
         twin.created_at = datetime.fromisoformat(data['created_at'])
         twin.updated_at = datetime.fromisoformat(data['updated_at'])
         
