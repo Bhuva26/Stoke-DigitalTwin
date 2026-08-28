@@ -11,9 +11,11 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 import matplotlib.pyplot as plt
 import sys
-sys.path.append(str(Path(__file__).parent.parent))
-sys.path.append(str(Path(__file__).parent.parent / 'models'))
-from .twin import DigitalTwin, PatientProfile
+try:
+    from .twin import DigitalTwin, PatientProfile
+except ImportError:
+    sys.path.append(str(Path(__file__).parent.parent))
+    from digital_twin.twin import DigitalTwin, PatientProfile
 
 
 class SimulationType(Enum):
@@ -324,6 +326,8 @@ class WhatIfAnalyzer:
         # Get initial lesion area from digital twin
         if self.digital_twin.lesion_features:
             initial_area = self.digital_twin.lesion_features.get('lesion_area_pixels', 1000)
+        elif self.digital_twin.imaging_features:
+            initial_area = self.digital_twin.imaging_features.lesion_area_pixels
         else:
             initial_area = 1000  # Default
         
@@ -506,7 +510,10 @@ def main():
     print("\n2. Testing Segmentation Quality Analyzer")
     
     # Create a mock digital twin with segmentation results
-    from .twin import DigitalTwin, PatientProfile
+    try:
+        from .twin import DigitalTwin, PatientProfile
+    except ImportError:
+        from digital_twin.twin import DigitalTwin, PatientProfile
     mock_twin = DigitalTwin(
         patient_id="test_patient",
         patient_profile=PatientProfile(patient_id="test_patient")
