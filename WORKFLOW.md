@@ -15,8 +15,8 @@ ISLES 2015 SISS (28 patients)
                      ↓
         ┌────────────┼────────────┐
         ↓            ↓            ↓
-  Feature       Image
- Extraction    Augmentation
+  Feature           lesion       Image
+ Extraction       segmentation  Augmentation
         │            │
         └────────────┼────────────┘
                      ↓
